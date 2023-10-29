@@ -3,3 +3,15 @@ services:
     image: 'redis:7-alpine'
     ports:
       - '6379'
+
+  db:
+    image: 'postgres:16-alpine'
+    restart: always
+    environment:
+      POSTGRES_DB: cloud_file_storage_db
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgres
+
+volumes:
+  db_data:
