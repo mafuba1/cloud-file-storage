@@ -20,7 +20,7 @@ public class PeopleRepositoryTests {
     public void PeopleRepository_FindByEmail_ReturnPerson() {
         Person person = new Person(
                 "email@mail.com",
-                "password"
+                "passwordA12~"
         );
 
         peopleRepository.save(person);
@@ -32,7 +32,7 @@ public class PeopleRepositoryTests {
     public void PeopleRepository_FindByEmail_ReturnNull() {
         Person person = new Person(
                 "email@mail.com",
-                "password"
+                "passwordA12~"
         );
 
         peopleRepository.delete(person);

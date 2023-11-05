@@ -25,7 +25,7 @@ public class PeopleServiceTests {
     public void PeopleRepository_SavePerson_OK() {
         Person person = new Person(
                 "email@email.ru",
-                "password"
+                "passwordA12~"
         );
         peopleService.save(person);
 
