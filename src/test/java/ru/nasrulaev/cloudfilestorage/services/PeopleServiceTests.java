@@ -6,6 +6,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.nasrulaev.cloudfilestorage.models.Person;
 import ru.nasrulaev.cloudfilestorage.repositories.PeopleRepository;
 
@@ -17,6 +18,8 @@ public class PeopleServiceTests {
 
     @Mock
     private PeopleRepository peopleRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private PeopleService peopleService;
