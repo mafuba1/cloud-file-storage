@@ -1,8 +1,18 @@
 services:
   redis:
     image: 'redis:7-alpine'
+
+  app:
+    build: .
     ports:
-      - '6379'
+      - '8080:8080'
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/cloud_file_storage_db
+      - SPRING_DATASOURCE_USERNAME=cloud_file_storage_db
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   db:
     image: 'postgres:16-alpine'
@@ -12,12 +22,6 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - db_data:/var/lib/postgres
-
-  adminer:
-    image: 'adminer:4'
-    restart: always
-    ports:
-      - '8080'
 
 volumes:
   db_data:
