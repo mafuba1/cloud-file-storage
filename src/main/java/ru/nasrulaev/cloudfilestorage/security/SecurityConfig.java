@@ -31,10 +31,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                                 authorize
                                         .requestMatchers(
-                                                "/auth",
-                                                "/registration",
-                                                "/error",
-                                                "/auth"
+                                                "/login",
+                                                "/register",
+                                                "/error"
                                         ).permitAll()
                                         .anyRequest()
                                         .authenticated()
@@ -42,7 +41,7 @@ public class SecurityConfig {
                 .logout(logout ->
                         logout
                                 .logoutUrl("/logout")
-                                .logoutSuccessUrl("/auth/auth")
+                                .logoutSuccessUrl("/login")
                 )
                 .userDetailsService(personDetailsService)
                 .formLogin(fromLoginConfigurer ->
