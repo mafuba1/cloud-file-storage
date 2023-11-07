@@ -40,7 +40,7 @@ public class AuthController {
     public String register(@Valid @ModelAttribute("person") PersonDTO personDTO,
                            BindingResult bindingResult) {
         if (bindingResult.hasErrors())
-            return "/auth/registration";
+            return "auth/registration";
 
         peopleService.save(mapFromDTO(personDTO));
 
