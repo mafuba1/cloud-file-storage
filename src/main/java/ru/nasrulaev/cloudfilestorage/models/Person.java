@@ -1,25 +1,29 @@
 package ru.nasrulaev.cloudfilestorage.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import ru.nasrulaev.cloudfilestorage.security.Password;
 
 @Entity
 @Table
 public class Person {
-    @Id
+
     @Column
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(unique = true)
     @Email
+    @Size(max = 320)
+    @NotBlank
     private String email;
 
     @Column
     @Password
+    @NotBlank
     private String password;
 
     public Person() {
