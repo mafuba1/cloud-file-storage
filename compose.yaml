@@ -21,7 +21,7 @@ services:
       POSTGRES_USER: cloud_file_storage_db
       POSTGRES_PASSWORD: password
     volumes:
-      - db_data:/var/lib/postgres
+      - db_data:/var/lib/postgresql/data
 
 volumes:
   db_data:
