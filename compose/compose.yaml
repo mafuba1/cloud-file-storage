@@ -1,6 +1,6 @@
 services:
-  redis:
-    image: 'redis:7-alpine'
+#  redis:
+#    image: 'redis:7-alpine'
 
   app:
     build: ..
@@ -9,17 +9,17 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/cloud_file_storage_db
-      SPRING_DATASOURCE_USERNAME: cloud_file_storage_db
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_NAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
   db:
     image: 'postgres:16-alpine'
     restart: always
     environment:
-      POSTGRES_USER: cloud_file_storage_db
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: ${DB_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/postgresql/data
 
