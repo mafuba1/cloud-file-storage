@@ -8,6 +8,7 @@ services:
       - '8080:8080'
     depends_on:
       - db
+      - minio
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_NAME}
@@ -23,5 +24,19 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  minio:
+    image: 'minio/minio'
+    restart: always
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+    volumes:
+      - minio_data:/minio
+    command: server --console-address ":9001" /minio
+
 volumes:
   db_data:
+  minio_data:
