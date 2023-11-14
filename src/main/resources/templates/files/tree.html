@@ -8,6 +8,9 @@
 
 <div th:each="file : ${files}">
     <p th:text="${file}"></p>
+    <form th:action="@{/tree/{object}(object=${file})}" th:method="DELETE">
+        <input type="submit" value="Удалить">
+    </form>
 </div>
 
 
