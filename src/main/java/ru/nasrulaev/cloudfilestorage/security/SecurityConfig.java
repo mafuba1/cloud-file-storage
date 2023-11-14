@@ -48,7 +48,7 @@ public class SecurityConfig {
                         fromLoginConfigurer
                                 .loginPage("/login")
                                 .loginProcessingUrl("/process_login")
-                                .defaultSuccessUrl("/")
+                                .defaultSuccessUrl("/tree")
                                 .failureUrl("/login?error")
                 )
                 .authenticationProvider(authenticationProvider())
