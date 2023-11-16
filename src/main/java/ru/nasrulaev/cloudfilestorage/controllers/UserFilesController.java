@@ -54,6 +54,7 @@ public class UserFilesController {
         return "files/tree";
     }
 
+
     @DeleteMapping("**")
     public String removeObject(@AuthenticationPrincipal PersonDetails personDetails,
                             HttpServletRequest request) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {

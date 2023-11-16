@@ -40,4 +40,20 @@ public class UserFilesRepository {
         );
     }
 
+    public void removeFolder(String folderName) {
+        this.listFolder(folderName).forEach(
+                itemResult -> {
+                    try {
+                        this.removeObject(itemResult.get().objectName());
+                    }
+                    catch (ErrorResponseException | InsufficientDataException | InternalException |
+                           InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException |
+                           ServerException | XmlParserException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+    }
+
+
 }

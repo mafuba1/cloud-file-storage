@@ -47,7 +47,11 @@ public class UserFilesService {
 
     public void removeObject(Person person, String objectPath) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         String fullPath = getUserFolder(person) + objectPath;
-        userFilesRepository.removeObject(fullPath);
+        if (fullPath.endsWith("/")) {
+            userFilesRepository.removeFolder(fullPath);
+        } else {
+            userFilesRepository.removeObject(fullPath);
+        }
     }
 
     private String getUserFolder(Person person) {
