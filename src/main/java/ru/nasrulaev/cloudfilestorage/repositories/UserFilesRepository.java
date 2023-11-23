@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -27,6 +28,16 @@ public class UserFilesRepository {
                 ListObjectsArgs.builder()
                         .bucket(ROOT_BUCKET)
                         .prefix(path)
+                        .build()
+        );
+    }
+
+    public void putObject(String objectName, InputStream stream) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        minioClient.putObject(
+                PutObjectArgs.builder()
+                        .bucket(ROOT_BUCKET)
+                        .object(objectName)
+                        .stream(stream, -1, 10485760)
                         .build()
         );
     }

@@ -13,6 +13,12 @@
     </form>
 </div>
 
+<form method="post" enctype="multipart/form-data" th:action="@{{url}(url=${currentUrl})}">
+    <label for="files">Files to upload: </label>
+    <input type="file" multiple name="files" id="files">
+    <br/>
+    <input type="submit" value="Upload">
+</form>
 
 </body>
 </html>
