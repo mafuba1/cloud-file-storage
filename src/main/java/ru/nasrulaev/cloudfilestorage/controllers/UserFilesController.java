@@ -17,7 +17,7 @@ import ru.nasrulaev.cloudfilestorage.services.UserFilesService;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/tree")
@@ -30,19 +30,6 @@ public class UserFilesController {
         this.userFilesService = userFilesService;
     }
 
-    @GetMapping({"", "/"})
-    public String rootFolder(@AuthenticationPrincipal PersonDetails personDetails,
-                             Model model) {
-        model.addAttribute("currentUrl", "/tree/");
-        model.addAttribute(
-                "files",
-                userFilesService.listFolder(
-                        personDetails.person(),
-                        ""
-                )
-        );
-        return "files/tree";
-    }
 
     @GetMapping("**")
     public String subFolder(@AuthenticationPrincipal PersonDetails personDetails,
@@ -59,14 +46,6 @@ public class UserFilesController {
         return "files/tree";
     }
 
-    @PostMapping({"", "/"})
-    public ResponseEntity<HttpStatus> uploadFile(@AuthenticationPrincipal PersonDetails personDetails,
-                                                 @ModelAttribute("files") FileUpload fileUpload) {
-        List<MultipartFile> multipartFiles = fileUpload.getFiles();
-        userFilesService.putObjects(personDetails.person(), "", multipartFiles);
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
     @PostMapping("**")
     public ResponseEntity<HttpStatus> uploadFile(@AuthenticationPrincipal PersonDetails personDetails,
                                                  @ModelAttribute("files") FileUpload fileUpload,
@@ -77,7 +56,6 @@ public class UserFilesController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-
     @DeleteMapping("**")
     public String removeObject(@AuthenticationPrincipal PersonDetails personDetails,
                             HttpServletRequest request) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
@@ -87,8 +65,12 @@ public class UserFilesController {
     }
 
     private String extractSubRequest(HttpServletRequest request) {
-        return request.getRequestURI()
-                .split(request.getContextPath() + "/tree/")[1];
+        return Arrays.stream(request.getRequestURI()
+                        .split(request.getContextPath() + "/tree/")
+                )
+                .skip(1)
+                .findFirst()
+                .orElse("");
     }
 
     private String extractCurrentFolder(String objectPath) {
