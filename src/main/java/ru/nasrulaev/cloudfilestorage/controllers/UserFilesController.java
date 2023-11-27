@@ -49,9 +49,17 @@ public class UserFilesController {
     @PostMapping("**")
     public ResponseEntity<HttpStatus> uploadFile(@AuthenticationPrincipal PersonDetails personDetails,
                                                  @ModelAttribute("files") FileUpload fileUpload,
-                                                 HttpServletRequest request) {
-        List<MultipartFile> multipartFiles = fileUpload.getFiles();
+                                                 @RequestParam Optional<String> folderName,
+                                                 HttpServletRequest request) throws InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException {
         final String folder = extractSubRequest(request);
+
+        if (folderName.isPresent()) {
+            userFilesService.createFolder(personDetails.person(), folder, folderName.get());
+            return ResponseEntity.ok(HttpStatus.CREATED);
+        }
+
+
+        List<MultipartFile> multipartFiles = fileUpload.getFiles();
         userFilesService.putObjects(personDetails.person(), folder, multipartFiles);
         return ResponseEntity.ok(HttpStatus.OK);
     }

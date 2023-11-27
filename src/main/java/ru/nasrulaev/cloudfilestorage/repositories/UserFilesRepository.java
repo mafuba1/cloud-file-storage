@@ -6,6 +6,7 @@ import io.minio.messages.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
@@ -38,6 +39,16 @@ public class UserFilesRepository {
                         .bucket(ROOT_BUCKET)
                         .object(objectName)
                         .stream(stream, -1, 10485760)
+                        .build()
+        );
+    }
+
+    public void createFolder(String folder) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        minioClient.putObject(
+                PutObjectArgs.builder()
+                        .bucket(ROOT_BUCKET)
+                        .object(folder)
+                        .stream(new ByteArrayInputStream(new byte[] {}), 0, -1)
                         .build()
         );
     }

@@ -20,5 +20,12 @@
     <input type="submit" value="Upload">
 </form>
 
+<form method="post" enctype="multipart/form-data" th:action="@{{url}(url=${currentUrl})}">
+    <label for="folder">New folder: </label>
+    <input type="text" id="folder" name="folderName"/>
+    <br/>
+    <input type="submit" value="New folder">
+</form>
+
 </body>
 </html>

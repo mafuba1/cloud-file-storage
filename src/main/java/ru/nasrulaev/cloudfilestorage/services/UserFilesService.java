@@ -28,8 +28,7 @@ public class UserFilesService {
 
     public List<String> listFolder(Person person, String path) {
         String userFolder = getUserFolder(person);
-        String fullPath = userFolder + path;
-        if (!fullPath.endsWith("/")) fullPath += "/";
+        String fullPath = trueFolder(userFolder + path);
         Iterable<Result<Item>> results = userFilesRepository.listFolder(fullPath);
         List<String> fileList = new ArrayList<>();
         results.forEach(
@@ -48,18 +47,29 @@ public class UserFilesService {
 
     public void putObjects(Person person, String folder, List<MultipartFile> multipartFiles) {
         String userFolder = getUserFolder(person);
-        multipartFiles.forEach(multipartFile ->
+        multipartFiles.stream()
+                .filter(multipartFile -> !multipartFile.isEmpty())
+                .forEach(multipartFile ->
                 {
-                    System.out.println(multipartFile.getOriginalFilename());
                     try {
                         userFilesRepository.putObject(
-                                userFolder + folder + multipartFile.getOriginalFilename(),
+                                userFolder + trueFolder(folder) + multipartFile.getOriginalFilename(),
                                 multipartFile.getInputStream()
                         );
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 }
+        );
+    }
+
+    public void createFolder(Person person, String folder, String folderName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        String userFolder = getUserFolder(person);
+        System.out.println(folder);
+        System.out.println(folderName);
+        System.out.println(trueFolder(userFolder + folder) + trueFolder(folderName));
+        userFilesRepository.createFolder(
+                trueFolder(userFolder + folder) + trueFolder(folderName)
         );
     }
 
@@ -74,5 +84,9 @@ public class UserFilesService {
 
     private String getUserFolder(Person person) {
         return "user-" + person.getId() + "-files/";
+    }
+
+    private String trueFolder(String folder) {
+         return folder.endsWith("/") ? folder : folder + "/";
     }
 }
