@@ -10,6 +10,7 @@ import ru.nasrulaev.cloudfilestorage.models.Person;
 import ru.nasrulaev.cloudfilestorage.repositories.UserFilesRepository;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -43,6 +44,11 @@ public class UserFilesService {
 
         );
         return fileList;
+    }
+
+    public InputStream getObject(Person person, String path) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        String fullPath = getUserFolder(person) + path;
+        return userFilesRepository.getObject(fullPath);
     }
 
     public void putObjects(Person person, String folder, List<MultipartFile> multipartFiles) {
@@ -89,4 +95,5 @@ public class UserFilesService {
     private String trueFolder(String folder) {
          return folder.endsWith("/") ? folder : folder + "/";
     }
+
 }

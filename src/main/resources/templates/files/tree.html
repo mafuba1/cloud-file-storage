@@ -12,6 +12,7 @@
        th:text="${file}">
     </a>
     <a th:unless="${file.endsWith('/')}"
+       th:href="@{/download/{path}(path=${file})}"
        th:text="${file}">
     </a>
     <form th:action="@{/delete/{object}(object=${file})}" th:method="DELETE">

@@ -53,6 +53,15 @@ public class UserFilesRepository {
         );
     }
 
+    public InputStream getObject(String object) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        return minioClient.getObject(
+                GetObjectArgs.builder()
+                        .bucket(ROOT_BUCKET)
+                        .object(object)
+                        .build()
+        );
+    }
+
     public void removeObject(String objectName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         minioClient.removeObject(
                 RemoveObjectArgs.builder()

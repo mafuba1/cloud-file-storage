@@ -2,6 +2,8 @@ package ru.nasrulaev.cloudfilestorage.controllers;
 
 import io.minio.errors.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import ru.nasrulaev.cloudfilestorage.security.PersonDetails;
 import ru.nasrulaev.cloudfilestorage.services.UserFilesService;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -42,6 +46,17 @@ public class UserFilesController {
         return "files/tree";
     }
 
+    @GetMapping("/download/**")
+    public void downloadFile(@AuthenticationPrincipal PersonDetails personDetails,
+                             HttpServletRequest request,
+                             HttpServletResponse response) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        final String path = extractSubRequest(request);
+        InputStream object = userFilesService.getObject(personDetails.person(), path);
+        OutputStream out = response.getOutputStream();
+        IOUtils.copy(object, out);
+        out.flush();
+    }
+
     @PostMapping("/upload/**")
     public String uploadFile(@AuthenticationPrincipal PersonDetails personDetails,
                                                  @ModelAttribute("files") FileUpload fileUpload,
@@ -69,13 +84,11 @@ public class UserFilesController {
     }
 
     private String extractSubRequest(HttpServletRequest request) {
-        String subRequest =  request.getRequestURI()
-                .replaceAll(
+        return request.getRequestURI()
+                .replaceFirst(
                         request.getContextPath() + "/\\w+/?",
                         ""
                 );
-        System.out.println(subRequest);
-        return subRequest;
     }
 
     private String extractCurrentFolder(String objectPath) {
