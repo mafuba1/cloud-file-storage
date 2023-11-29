@@ -7,7 +7,13 @@
 <body>
 
 <div th:each="file : ${files}">
-    <p th:text="${file}"></p>
+    <a th:if="${file.endsWith('/')}"
+       th:href="@{/tree/{path}(path=${file})}"
+       th:text="${file}">
+    </a>
+    <a th:unless="${file.endsWith('/')}"
+       th:text="${file}">
+    </a>
     <form th:action="@{/delete/{object}(object=${file})}" th:method="DELETE">
         <input type="submit" value="Удалить">
     </form>
