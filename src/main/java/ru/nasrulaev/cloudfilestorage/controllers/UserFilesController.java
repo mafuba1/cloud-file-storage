@@ -3,8 +3,6 @@ package ru.nasrulaev.cloudfilestorage.controllers;
 import io.minio.errors.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,7 +43,7 @@ public class UserFilesController {
     }
 
     @PostMapping("/upload/**")
-    public ResponseEntity<HttpStatus> uploadFile(@AuthenticationPrincipal PersonDetails personDetails,
+    public String uploadFile(@AuthenticationPrincipal PersonDetails personDetails,
                                                  @ModelAttribute("files") FileUpload fileUpload,
                                                  @RequestParam Optional<String> folderName,
                                                  HttpServletRequest request) throws InvalidKeyException, InvalidResponseException, XmlParserException, InternalException, ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException {
@@ -53,13 +51,13 @@ public class UserFilesController {
 
         if (folderName.isPresent()) {
             userFilesService.createFolder(personDetails.person(), folder, folderName.get());
-            return ResponseEntity.ok(HttpStatus.CREATED);
+            return "redirect:/tree/" +  folder;
         }
 
 
         List<MultipartFile> multipartFiles = fileUpload.getFiles();
         userFilesService.putObjects(personDetails.person(), folder, multipartFiles);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return "redirect:/tree/" +  folder;
     }
 
     @DeleteMapping("/delete/**")
