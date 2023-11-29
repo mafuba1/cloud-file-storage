@@ -8,26 +8,26 @@
 
 <div th:each="file : ${files}">
     <p th:text="${file}"></p>
-    <form th:action="@{/tree/{object}(object=${file})}" th:method="DELETE">
+    <form th:action="@{/delete/{object}(object=${file})}" th:method="DELETE">
         <input type="submit" value="Удалить">
     </form>
 </div>
 
-<form method="post" enctype="multipart/form-data" th:action="@{{url}(url=${currentUrl})}">
+<form method="post" enctype="multipart/form-data" th:action="@{/upload{url}(url=${currentUrl})}">
     <label for="files">Files to upload: </label>
     <input type="file" multiple name="files" id="files">
     <br/>
     <input type="submit" value="Upload">
 </form>
 
-<form method="post" enctype="multipart/form-data" th:action="@{{url}(url=${currentUrl})}">
+<form method="post" enctype="multipart/form-data" th:action="@{/upload{url}(url=${currentUrl})}">
     <label for="directories">Directories to upload: </label>
     <input type="file" multiple webkitdirectory name="files" id="directories">
     <br/>
     <input type="submit" value="Upload">
 </form>
 
-<form method="post" enctype="multipart/form-data" th:action="@{{url}(url=${currentUrl})}">
+<form method="post" enctype="multipart/form-data" th:action="@{/upload{url}(url=${currentUrl})}">
     <label for="folder">New folder: </label>
     <input type="text" id="folder" name="folderName"/>
     <br/>

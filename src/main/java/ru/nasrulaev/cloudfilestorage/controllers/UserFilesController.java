@@ -20,7 +20,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Controller
-@RequestMapping("/tree")
 public class UserFilesController {
 
     private final UserFilesService userFilesService;
@@ -30,12 +29,11 @@ public class UserFilesController {
         this.userFilesService = userFilesService;
     }
 
-
-    @GetMapping("**")
+    @GetMapping("/tree/**")
     public String subFolder(@AuthenticationPrincipal PersonDetails personDetails,
                             HttpServletRequest request, Model model) {
         final String subFolder = extractSubRequest(request);
-        model.addAttribute("currentUrl", "/tree/" + subFolder);
+        model.addAttribute("currentUrl", subFolder);
         model.addAttribute(
                 "files",
                 userFilesService.listFolder(
@@ -46,7 +44,7 @@ public class UserFilesController {
         return "files/tree";
     }
 
-    @PostMapping("**")
+    @PostMapping("/upload/**")
     public ResponseEntity<HttpStatus> uploadFile(@AuthenticationPrincipal PersonDetails personDetails,
                                                  @ModelAttribute("files") FileUpload fileUpload,
                                                  @RequestParam Optional<String> folderName,
@@ -64,7 +62,7 @@ public class UserFilesController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @DeleteMapping("**")
+    @DeleteMapping("/delete/**")
     public String removeObject(@AuthenticationPrincipal PersonDetails personDetails,
                             HttpServletRequest request) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         final String pathToObject = extractSubRequest(request);
@@ -73,12 +71,13 @@ public class UserFilesController {
     }
 
     private String extractSubRequest(HttpServletRequest request) {
-        return Arrays.stream(request.getRequestURI()
-                        .split(request.getContextPath() + "/tree/")
-                )
-                .skip(1)
-                .findFirst()
-                .orElse("");
+        String subRequest =  request.getRequestURI()
+                .replaceAll(
+                        request.getContextPath() + "/\\w+/?",
+                        ""
+                );
+        System.out.println(subRequest);
+        return subRequest;
     }
 
     private String extractCurrentFolder(String objectPath) {
