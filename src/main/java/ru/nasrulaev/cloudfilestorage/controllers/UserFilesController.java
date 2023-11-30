@@ -86,7 +86,7 @@ public class UserFilesController {
     private String extractSubRequest(HttpServletRequest request) {
         return request.getRequestURI()
                 .replaceFirst(
-                        request.getContextPath() + "/\\w+/?",
+                        request.getContextPath() + "/[^/]+/?",
                         ""
                 );
     }

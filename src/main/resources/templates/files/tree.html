@@ -9,12 +9,12 @@
 <div th:each="file : ${files}">
     <div th:if="${file.endsWith('/')}" style="float: left; margin: auto">
         <a th:href="@{/tree/{path}(path=${file})}"
-           th:text="${file.replaceAll('.*/(\w+/)$', '$1')}">
+           th:text="${file.replaceAll('.*/([^/]+/)$', '$1')}">
         </a>
     </div>
     <div th:unless="${file.endsWith('/')}" style="float: left; margin: auto;">
         <a th:href="@{/download/{path}(path=${file})}"
-           th:text="${file.replaceAll('\w+/', '')}">
+           th:text="${file.replaceAll('[^/]+/', '')}">
         </a>
     </div>
     <form style="margin: auto" th:action="@{/delete/{object}(object=${file})}" th:method="DELETE">
