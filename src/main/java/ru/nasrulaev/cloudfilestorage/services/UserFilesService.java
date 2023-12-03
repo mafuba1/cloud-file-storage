@@ -30,7 +30,7 @@ public class UserFilesService {
     public List<String> listFolder(Person person, String path) {
         String userFolder = getUserFolder(person);
         String fullPath = trueFolder(userFolder + path);
-        Iterable<Result<Item>> results = userFilesRepository.listFolder(fullPath);
+        Iterable<Result<Item>> results = userFilesRepository.listFolder(fullPath, false);
         List<String> fileList = new ArrayList<>();
         results.forEach(
                 itemResult ->

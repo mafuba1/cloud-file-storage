@@ -24,11 +24,12 @@ public class UserFilesRepository {
         this.minioClient = minioClient;
     }
 
-    public Iterable<Result<Item>> listFolder(String path) {
+    public Iterable<Result<Item>> listFolder(String path, boolean recursive) {
         return minioClient.listObjects(
                 ListObjectsArgs.builder()
                         .bucket(ROOT_BUCKET)
                         .prefix(path)
+                        .recursive(recursive)
                         .build()
         );
     }
@@ -72,7 +73,7 @@ public class UserFilesRepository {
     }
 
     public void removeFolder(String folderName) {
-        this.listFolder(folderName).forEach(
+        this.listFolder(folderName, true).forEach(
                 itemResult -> {
                     try {
                         this.removeObject(itemResult.get().objectName());
