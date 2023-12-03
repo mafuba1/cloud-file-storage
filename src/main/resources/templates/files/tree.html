@@ -7,36 +7,46 @@
 <body>
 
 <div th:each="file : ${files}">
-    <div th:if="${file.endsWith('/')}" style="float: left; margin: auto">
+    <div th:if="${file.endsWith('/')}" >
         <a th:href="@{/tree/{path}(path=${file})}"
            th:text="${file.replaceAll('.*/([^/]+/)$', '$1')}">
         </a>
+        <form th:action="@{/rename/{object}(object=${file})}" th:method="POST">
+            <input type="text" name="newName">
+            <input type="submit" value="Переименовать">
+        </form>
     </div>
-    <div th:unless="${file.endsWith('/')}" style="float: left; margin: auto;">
+    <div th:unless="${file.endsWith('/')}">
         <a th:href="@{/download/{path}(path=${file})}"
            th:text="${file.replaceAll('[^/]+/', '')}">
         </a>
+        <form th:action="@{/rename/{object}(object=${file})}" th:method="POST">
+            <input type="text" name="newName">
+            <input type="submit" value="Переименовать">
+        </form>
     </div>
-    <form style="margin: auto" th:action="@{/delete/{object}(object=${file})}" th:method="DELETE">
+    <form th:action="@{/delete/{object}(object=${file})}" th:method="DELETE">
         <input type="submit" value="Удалить">
     </form>
 </div>
 
-<form method="post" enctype="multipart/form-data" th:action="@{/upload{url}(url=${currentUrl})}">
+<br/>
+
+<form method="post" enctype="multipart/form-data" th:action="@{/upload/{url}(url=${currentUrl})}">
     <label for="files">Files to upload: </label>
     <input type="file" multiple name="files" id="files">
     <br/>
     <input type="submit" value="Upload">
 </form>
 
-<form method="post" enctype="multipart/form-data" th:action="@{/upload{url}(url=${currentUrl})}">
+<form method="post" enctype="multipart/form-data" th:action="@{/upload/{url}(url=${currentUrl})}">
     <label for="directories">Directories to upload: </label>
     <input type="file" multiple webkitdirectory name="files" id="directories">
     <br/>
     <input type="submit" value="Upload">
 </form>
 
-<form method="post" enctype="multipart/form-data" th:action="@{/upload{url}(url=${currentUrl})}">
+<form method="post" enctype="multipart/form-data" th:action="@{/upload/{url}(url=${currentUrl})}">
     <label for="folder">New folder: </label>
     <input type="text" id="folder" name="folderName"/>
     <br/>

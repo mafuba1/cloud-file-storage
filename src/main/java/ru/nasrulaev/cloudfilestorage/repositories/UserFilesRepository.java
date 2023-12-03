@@ -87,5 +87,20 @@ public class UserFilesRepository {
         );
     }
 
+    public void copyObject(String oldPath, String newPath) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        minioClient.copyObject(
+                CopyObjectArgs.builder()
+                        .bucket(ROOT_BUCKET)
+                        .object(newPath)
+                        .source(
+                                CopySource.builder()
+                                        .bucket(ROOT_BUCKET)
+                                        .object(oldPath)
+                                        .build()
+                        )
+                        .build()
+        );
+    }
+
 
 }

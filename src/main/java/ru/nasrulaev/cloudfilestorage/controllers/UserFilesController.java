@@ -40,7 +40,8 @@ public class UserFilesController {
                 "files",
                 userFilesService.listFolder(
                         personDetails.person(),
-                        subFolder
+                        subFolder,
+                        false
                 )
         );
         return "files/tree";
@@ -73,6 +74,15 @@ public class UserFilesController {
         List<MultipartFile> multipartFiles = fileUpload.getFiles();
         userFilesService.putObjects(personDetails.person(), folder, multipartFiles);
         return "redirect:/tree/" +  folder;
+    }
+
+    @PostMapping("/rename/**")
+    public String renameObject(@AuthenticationPrincipal PersonDetails personDetails,
+                               @RequestParam String newName,
+                               HttpServletRequest request) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        final String oldName = extractSubRequest(request);
+        userFilesService.renameObject(personDetails.person(), oldName, newName);
+        return "redirect:/tree/" + extractCurrentFolder(oldName);
     }
 
     @DeleteMapping("/delete/**")

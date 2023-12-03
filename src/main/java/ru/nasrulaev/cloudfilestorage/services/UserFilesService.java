@@ -27,10 +27,10 @@ public class UserFilesService {
         this.userFilesRepository = userFilesRepository;
     }
 
-    public List<String> listFolder(Person person, String path) {
+    public List<String> listFolder(Person person, String path, boolean recursive) {
         String userFolder = getUserFolder(person);
         String fullPath = trueFolder(userFolder + path);
-        Iterable<Result<Item>> results = userFilesRepository.listFolder(fullPath, false);
+        Iterable<Result<Item>> results = userFilesRepository.listFolder(fullPath, recursive);
         List<String> fileList = new ArrayList<>();
         results.forEach(
                 itemResult ->
@@ -77,6 +77,39 @@ public class UserFilesService {
         userFilesRepository.createFolder(
                 trueFolder(userFolder + folder) + trueFolder(folderName)
         );
+    }
+
+    public void renameObject(Person person, String oldName, String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+
+        if (oldName.endsWith("/")) {
+            String newPath = oldName.replaceFirst(
+                    "[^/]+/$",
+                    "/" + newName + "/"
+            );
+            renameFolder(person, oldName, newPath);
+        }
+        else {
+            String newPath = oldName.replaceFirst(
+                    "[^/]+$",
+                    newName
+            );
+            renameFile(person, oldName, newPath);
+        }
+    }
+
+    private void renameFile(Person person, String oldName, String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        String oldPath = getUserFolder(person) + oldName;
+        String newPath = getUserFolder(person) + newName;
+        userFilesRepository.copyObject(oldPath, newPath);
+        userFilesRepository.removeObject(oldPath);
+    }
+
+    private void renameFolder(Person person, String oldName, String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        List<String> objectsToRename = this.listFolder(person, oldName, true);
+        for (String oldPath : objectsToRename) {
+                this.renameFile(person, oldPath, oldPath.replace(oldName, newName));
+        }
+        this.removeObject(person, oldName);
     }
 
     public void removeObject(Person person, String objectPath) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
