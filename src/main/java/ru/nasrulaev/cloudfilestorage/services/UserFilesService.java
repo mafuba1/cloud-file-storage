@@ -121,11 +121,11 @@ public class UserFilesService {
         }
     }
 
-    private String getUserFolder(Person person) {
+    public String getUserFolder(Person person) {
         return "user-" + person.getId() + "-files/";
     }
 
-    private String trueFolder(String folder) {
+    public String trueFolder(String folder) {
          return folder.endsWith("/") ? folder : folder + "/";
     }
 
