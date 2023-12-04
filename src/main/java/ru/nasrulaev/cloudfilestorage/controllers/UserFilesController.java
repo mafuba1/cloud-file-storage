@@ -35,7 +35,7 @@ public class UserFilesController {
     public String subFolder(@AuthenticationPrincipal PersonDetails personDetails,
                             HttpServletRequest request, Model model) {
         final String subFolder = extractSubRequest(request);
-        final String parentFolder = extractParentFolder(subFolder);
+        final String parentFolder = userFilesService.extractParentFolder(subFolder);
         model.addAttribute("parentFolder", parentFolder);
         model.addAttribute("currentUrl", subFolder);
 
@@ -96,7 +96,7 @@ public class UserFilesController {
                                HttpServletRequest request) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         final String oldName = extractSubRequest(request);
         userFilesService.renameObject(personDetails.person(), oldName, newName);
-        return "redirect:/tree/" + extractParentFolder(oldName);
+        return "redirect:/tree/" + userFilesService.extractParentFolder(oldName);
     }
 
     @DeleteMapping("/delete/**")
@@ -104,7 +104,7 @@ public class UserFilesController {
                             HttpServletRequest request) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         final String pathToObject = extractSubRequest(request);
         userFilesService.removeObject(personDetails.person(), pathToObject);
-        return "redirect:/tree/" + extractParentFolder(pathToObject);
+        return "redirect:/tree/" + userFilesService.extractParentFolder(pathToObject);
     }
 
     private String extractSubRequest(HttpServletRequest request) {
@@ -113,11 +113,5 @@ public class UserFilesController {
                         request.getContextPath() + "/[^/]+/?",
                         ""
                 );
-    }
-
-    private String extractParentFolder(String objectPath) {
-        if (objectPath.endsWith("/")) objectPath = objectPath.replaceAll(".$", "");
-        if (!objectPath.contains("/")) return "";
-        return objectPath.substring(0, objectPath.lastIndexOf("/"));
     }
 }

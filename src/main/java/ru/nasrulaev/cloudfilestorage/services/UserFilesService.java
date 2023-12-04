@@ -129,4 +129,9 @@ public class UserFilesService {
          return folder.endsWith("/") ? folder : folder + "/";
     }
 
+    public String extractParentFolder(String objectPath) {
+        if (objectPath.endsWith("/")) objectPath = objectPath.replaceAll(".$", "");
+        if (!objectPath.contains("/")) return "";
+        return objectPath.substring(0, objectPath.lastIndexOf("/"));
+    }
 }
