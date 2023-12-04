@@ -6,6 +6,10 @@
 </head>
 <body>
 
+<a th:unless="${currentUrl.equals('')}" th:text=".."
+   th:href="@{/tree/{goUp}(goUp=${parentFolder})}">
+</a>
+
 <div th:each="file : ${files}">
     <div th:if="${file.endsWith('/')}" >
         <a th:href="@{/tree/{path}(path=${file})}"

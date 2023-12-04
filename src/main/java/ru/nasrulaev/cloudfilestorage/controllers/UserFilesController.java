@@ -35,15 +35,29 @@ public class UserFilesController {
     public String subFolder(@AuthenticationPrincipal PersonDetails personDetails,
                             HttpServletRequest request, Model model) {
         final String subFolder = extractSubRequest(request);
+        final String parentFolder = extractParentFolder(subFolder);
+        model.addAttribute("parentFolder", parentFolder);
         model.addAttribute("currentUrl", subFolder);
+
+        List<String> userFiles = userFilesService.listFolder(
+                personDetails.person(),
+                subFolder,
+                false
+        );
+
+        boolean selfPointingFolder = userFiles.get(0).equals(
+                        userFilesService.trueFolder(subFolder)
+        );
+        if (!userFiles.isEmpty() && selfPointingFolder)
+            userFiles = userFiles.stream()
+                    .skip(1)
+                    .toList();
+
         model.addAttribute(
                 "files",
-                userFilesService.listFolder(
-                        personDetails.person(),
-                        subFolder,
-                        false
-                )
+                userFiles
         );
+
         return "files/tree";
     }
 
