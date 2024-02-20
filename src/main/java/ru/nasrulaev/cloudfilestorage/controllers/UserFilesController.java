@@ -45,10 +45,15 @@ public class UserFilesController {
                 false
         );
 
+        if (userFiles.isEmpty())
+            return "files/tree";
+
+
         boolean selfPointingFolder = userFiles.get(0).equals(
                         userFilesService.trueFolder(subFolder)
         );
-        if (!userFiles.isEmpty() && selfPointingFolder)
+
+        if (selfPointingFolder)
             userFiles = userFiles.stream()
                     .skip(1)
                     .toList();
