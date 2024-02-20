@@ -21,7 +21,7 @@ services:
       SPRING_DATASOURCE_USERNAME: ${DB_NAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
 
   db:
     image: 'postgres:16-alpine'
