@@ -1,6 +1,12 @@
 services:
   redis:
-      image: 'redis:7-alpine'
+    image: 'redis:7-alpine'
+    ports:
+      - '6379'
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - redis_data_prod:/var/lib/redis/data
 
   app:
     image: 'mafuba1/cloud-file-storage'
@@ -9,6 +15,7 @@ services:
     depends_on:
       - db
       - minio
+      - redis
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_NAME}
@@ -38,3 +45,4 @@ services:
 volumes:
   db_data_prod:
   minio_data_prod:
+  redis_data_prod:

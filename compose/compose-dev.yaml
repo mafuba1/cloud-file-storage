@@ -1,6 +1,13 @@
 services:
-#  redis:
-#    image: 'redis:7-alpine'
+  redis:
+    image: 'redis:7-alpine'
+    ports:
+      - '6379'
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/var/lib/redis/data
+
 
   app:
     build: ..
@@ -9,6 +16,7 @@ services:
     depends_on:
       - db
       - minio
+      - redis
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_NAME}
@@ -41,3 +49,4 @@ services:
 volumes:
   db_data:
   minio_data:
+  redis_data:
