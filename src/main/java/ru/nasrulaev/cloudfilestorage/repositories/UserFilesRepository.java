@@ -3,6 +3,7 @@ package ru.nasrulaev.cloudfilestorage.repositories;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.Item;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,22 @@ public class UserFilesRepository {
     @Autowired
     public UserFilesRepository(MinioClient minioClient) {
         this.minioClient = minioClient;
+    }
+
+    @PostConstruct
+    public void makeRootBucket() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        boolean rootBucketExists = minioClient.bucketExists(
+                BucketExistsArgs.builder()
+                        .bucket(ROOT_BUCKET)
+                        .build());
+        if (rootBucketExists)
+            return;
+
+        minioClient.makeBucket(
+                MakeBucketArgs.builder()
+                        .bucket(ROOT_BUCKET)
+                        .build()
+        );
     }
 
     public Iterable<Result<Item>> listFolder(String path, boolean recursive) {
