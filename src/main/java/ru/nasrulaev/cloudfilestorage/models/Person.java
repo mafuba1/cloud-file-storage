@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.springframework.data.redis.core.index.Indexed;
 import ru.nasrulaev.cloudfilestorage.security.Password;
+
+import java.io.Serializable;
 
 @Entity
 @Table
-public class Person {
+public class Person implements Serializable {
 
     @Column
     @Id
@@ -19,6 +22,7 @@ public class Person {
     @Email
     @Size(max = 320)
     @NotBlank
+    @Indexed
     private String email;
 
     @Column
