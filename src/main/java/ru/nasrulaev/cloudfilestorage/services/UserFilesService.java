@@ -29,21 +29,29 @@ public class UserFilesService {
 
     public List<String> listFolder(Person person, String path, boolean recursive) {
         String userFolder = getUserFolder(person);
-        String fullPath = trueFolder(userFolder + path);
+        String fullPath = userFolder + path;
         Iterable<Result<Item>> results = userFilesRepository.listFolder(fullPath, recursive);
-        List<String> fileList = new ArrayList<>();
-        results.forEach(
-                itemResult ->
-                {
-                    try {
-                        fileList.add(itemResult.get().objectName().substring(userFolder.length()));
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+        return resultsToList(person, results);
+    }
 
+    public List<String> searchObject(Person person, String objectName) {
+        List<String> searchResult = listFolder(
+                person,
+                objectName,
+                false
         );
-        return fileList;
+
+        listFolder(person, extractParentFolder(objectName), false).stream()
+                .filter(name ->
+                        name.endsWith("/")
+                )
+                .forEach(newFolder ->
+                        searchResult.addAll(
+                                searchObject(person, newFolder + objectName)
+                        )
+                );
+
+        return searchResult;
     }
 
     public InputStream getObject(Person person, String path) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
@@ -119,6 +127,25 @@ public class UserFilesService {
         } else {
             userFilesRepository.removeObject(fullPath);
         }
+    }
+
+    private List<String> resultsToList(Person person, Iterable<Result<Item>> results){
+        List<String> list = new ArrayList<>();
+        String userFolder = getUserFolder(person);
+
+        results.forEach(
+                itemResult ->
+                {
+                    try {
+                        list.add(itemResult.get().objectName().substring(userFolder.length()));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+        );
+
+        return list;
     }
 
     public String getUserFolder(Person person) {

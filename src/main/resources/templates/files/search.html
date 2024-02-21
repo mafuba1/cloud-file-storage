@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+</head>
+<body>
+
+<form method="get" action="/search">
+    <label for="query">Search query: </label>
+    <input type="text" id="query" name="q">
+    <input type="submit" value="Search">
+</form>
+
+<div th:each="file : ${searchResult}">
+    <div th:if="${file.endsWith('/')}" >
+        <a th:href="@{/tree/{path}(path=${file})}"
+           th:text="${file}">
+        </a>
+        <form th:action="@{/rename/{object}(object=${file})}" th:method="POST">
+            <input type="text" name="newName">
+            <input type="submit" value="Переименовать">
+        </form>
+    </div>
+    <div th:unless="${file.endsWith('/')}">
+        <a th:href="@{/download/{path}(path=${file})}"
+           th:text="${file}">
+        </a>
+        <form th:action="@{/rename/{object}(object=${file})}" th:method="POST">
+            <input type="text" name="newName">
+            <input type="submit" value="Переименовать">
+        </form>
+    </div>
+    <form th:action="@{/delete/{object}(object=${file})}" th:method="DELETE">
+        <input type="submit" value="Удалить">
+    </form>
+</div>
+</body>
